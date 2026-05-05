@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APE VISION GROUP | Shaping bold ideas into visionary realities</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+        
+        :root {
+            --brand-navy: #1e3a8a; 
+            --brand-blue: #3b82f6; 
+        }
+
+        #avg-wrapper { 
+            font-family: 'Inter', sans-serif; 
+            scroll-behavior: smooth; 
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* View Management */
+        .avg-view { 
+            display: none; 
+            opacity: 0; 
+            transform: translateY(15px); 
+            transition: all 0.4s ease-out; 
+        }
+        .avg-view.active { 
+            display: block; 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
+        
+        /* UI Elements */
+        .card-interaction { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #f1f5f9; 
+        }
+        .card-interaction:hover { 
+            transform: translateY(-8px); 
+            border-color: var(--brand-blue); 
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.1); 
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .nav-item { 
+            position: relative; 
+            cursor: pointer; 
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+        }
+        .nav-item::after { 
+            content: ''; 
+            position: absolute; 
+            bottom: 0; 
+            left: 0; 
+            width: 0; 
+            height: 2px; 
+            background: var(--brand-blue); 
+            transition: width 0.3s; 
+        }
+        .nav-item.active-nav::after, .nav-item:hover::after { width: 100%; }
+        .nav-item.active-nav { color: var(--brand-navy); font-weight: 800; }
+
+        .hero-overlay { background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.85)); }
+        .micro-hero { background-color: var(--brand-navy); position: relative; overflow: hidden; padding: 120px 0; min-height: 400px; display: flex; align-items: center; justify-content: center; }
+        .micro-hero-overlay { background: linear-gradient(135deg, rgba(30, 58, 138, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        .list-bullet::before { 
+            content: "•"; 
+            color: var(--brand-blue); 
+            font-weight: bold; 
+            margin-right: 0.75rem; 
+        }
+
+        .leadership-card {
+            border-radius: 3rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            background: white;
+            transition: transform 0.4s ease;
+        }
+        .leadership-img { transition: transform 0.5s ease; }
+        .leadership-card:hover .leadership-img { transform: scale(1.05); }
+
+        .industry-card {
+            height: 440px;
+            border-radius: 2.5rem;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            background-color: #f1f5f9;
+        }
+        .industry-card-overlay {
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.4) 60%, transparent 100%);
+            transition: background 0.3s ease;
+        }
+        .industry-card:hover .industry-card-overlay {
+            background: linear-gradient(to top, rgba(30, 58, 138, 0.95) 0%, rgba(15, 23, 42, 0.5) 70%, transparent 100%);
+        }
+
+        .detail-section-title {
+            font-size: 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--brand-blue);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .grid-detail-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 2.5rem;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+            height: 100%;
+        }
+
+        .btn-primary {
+            background-color: var(--brand-blue);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+            display: inline-block;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            background-color: var(--brand-navy);
+        }
+    </style>
+</head>
+<body>
+
+<div id="avg-wrapper" class="bg-slate-50 text-slate-900 min-h-screen flex flex-col relative overflow-x-hidden">
+
+    <!-- NAVIGATION -->
+    <header id="main-header" class="glass-nav sticky top-0 z-[1000] py-3 lg:py-4 border-b border-slate-100">
+        <nav class="container mx-auto px-6 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer group" onclick="switchView('home')">
+                <div class="flex flex-col">
+                    <span class="text-xl lg:text-2xl font-black tracking-tighter text-blue-900 group-hover:text-blue-700 transition leading-none uppercase">APE VISION GROUP</span>
+                    <span class="text-[8px] lg:text-[10px] font-bold text-blue-500 uppercase tracking-widest mt-1">Shaping bold ideas into visionary realities</span>
+                </div>
+            </div>
+            
+            <div class="hidden xl:flex items-center space-x-5 text-[8.5px] font-black uppercase tracking-widest text-slate-500">
+                <span onclick="switchView('home')" id="nav-home" class="nav-item active-nav">Home</span>
+                <span onclick="switchView('about')" id="nav-about" class="nav-item">About Us</span>
+                <span onclick="switchView('services')" id="nav-services" class="nav-item">Our Services</span>
+                <span onclick="switchView('industries')" id="nav-industries" class="nav-item">Industries</span>
+                <span onclick="switchView('brain')" id="nav-brain" class="nav-item">Brain Behind AVG</span>
+                <span onclick="switchView('associates')" id="nav-associates" class="nav-item">Associates & Clientele</span>
+                <span onclick="switchView('contact')" id="nav-contact" class="nav-item">Contact Us</span>
+            </div>
+
+            <button class="xl:hidden p-2 text-slate-600 focus:outline-none" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars-staggered text-2xl"></i>
+            </button>
+        </nav>
+        
+        <div id="mobile-menu" class="hidden xl:hidden bg-white border-t border-slate-100 p-8 flex flex-col space-y-4 text-xs font-black uppercase tracking-widest text-slate-600 shadow-2xl">
+            <span onclick="switchView('home')">Home</span>
+            <span onclick="switchView('about')">About Us</span>
+            <span onclick="switchView('services')">Our Services</span>
+            <span onclick="switchView('industries')">Industries</span>
+            <span onclick="switchView('brain')">Brain Behind AVG</span>
+            <span onclick="switchView('associates')">Associates & Clientele</span>
+            <span onclick="switchView('contact')">Contact Us</span>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- HOME VIEW -->
+        <section id="view-home" class="avg-view active">
+            <div class="relative h-[750px] flex items-center justify-center text-center text-white overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&q=80&w=2000" class="absolute inset-0 w-full h-full object-cover" alt="Power Infrastructure">
+                <div class="absolute inset-0 hero-overlay"></div>
+                <div class="relative z-10 px-6 container mx-auto">
+                    <div class="inline-block bg-blue-600/30 backdrop-blur-sm border border-white/20 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.4em] mb-8">Integrated Global Solutions</div>
+                    <h1 class="text-5xl md:text-8xl font-black mb-8 uppercase tracking-tighter leading-[0.9]">Visionary <br/><span class="text-blue-400 italic font-light">Realities.</span></h1>
+                    <p class="text-lg md:text-2xl max-w-3xl mx-auto mb-12 text-slate-300 font-light leading-relaxed">Delivering end-to-end solutions across the global energy and infrastructure sectors.</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-6">
+                        <button onclick="switchView('services')" class="btn-primary shadow-2xl">Explore Solutions</button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-blue-900 py-12">
+                <div class="container mx-auto px-6 flex flex-wrap justify-center items-center gap-8 md:gap-24 text-blue-200 uppercase text-[10px] font-black tracking-[0.5em] opacity-80">
+                    <span>Innovation</span><span>•</span><span>Reliability</span><span>•</span><span>Sustainability</span><span>•</span><span>Excellence</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT US VIEW (Restored Page 3 Content) -->
+        <section id="view-about" class="avg-view py-24 bg-white">
+            <div class="container mx-auto px-6 max-w-6xl">
+                <!-- About Us Banner - Link 1 -->
+                <div class="relative h-[400px] rounded-[3rem] overflow-hidden mb-20 shadow-2xl">
+                    <img src="https://lh3.googleusercontent.com/d/1z2lT8vYOsf86b_dx1lr3dUZp4UsKnP1n" class="w-full h-full object-cover" alt="Infrastructure Overview">
+                    <div class="absolute inset-0 bg-blue-900/30"></div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-20 items-start mb-24">
+                    <div>
+                        <h2 class="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] mb-6">Ape Vision Group</h2>
+                        <h3 class="text-4xl md:text-5xl font-black text-slate-900 uppercase mb-10 leading-tight tracking-tighter">About Us</h3>
+                        <p class="text-slate-600 leading-relaxed text-lg font-light mb-8">Ape Vision Group is a forward-looking organization delivering integrated solutions across the energy and infrastructure sectors. Built on the principles of innovation, reliability, and sustainability, the group is committed to enabling modern infrastructure development and supporting the global transition toward cleaner and more efficient energy systems.</p>
+                        <p class="text-slate-600 leading-relaxed text-lg font-light">With a strong technical foundation and a solution-driven approach, Ape Vision Group focuses on delivering high-quality, future-ready projects that create long-term value for clients, partners, and communities.</p>
+                    </div>
+                    <!-- About Us Page 2 Side Image - Link 2 -->
+                    <div class="relative leadership-card h-[500px]">
+                        <img src="https://lh3.googleusercontent.com/d/1r-37yh5XJxk8NWlZXTMFNYlxSJwMpuUY" class="w-full h-full object-cover" alt="Project Site">
+                    </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12 mb-20">
+                    <div class="bg-slate-50 p-12 rounded-[3rem] border border-slate-100">
+                        <h4 class="text-xl font-black uppercase text-blue-900 mb-6 border-l-8 border-blue-600 pl-6">Our Vision</h4>
+                        <p class="text-slate-600 font-medium italic">"To be a trusted global contributor in energy and infrastructure development by delivering innovative, sustainable, and high-impact solutions that support future generations."</p>
+                    </div>
+                    <div class="bg-blue-900 text-white p-12 rounded-[3rem] shadow-xl">
+                        <h4 class="text-xl font-black uppercase mb-6 border-l-8 border-blue-400 pl-6 text-blue-400">Our Mission</h4>
+                        <ul class="space-y-3 text-sm opacity-90">
+                            <li>• Deliver reliable and technically advanced energy and infrastructure solutions</li>
+                            <li>• Maintain the highest standards of quality, safety, and operational excellence</li>
+                            <li>• Build long-term partnerships through trust, performance, and value creation</li>
+                            <li>• Contribute to sustainable development through responsible and innovative practices</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BRAIN BEHIND AVG VIEW (Restored Page 4 Content) -->
+        <section id="view-brain" class="avg-view py-24 bg-slate-50">
+            <div class="container mx-auto px-6 max-w-6xl">
+                <div class="text-center mb-20">
+                    <h2 class="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] mb-4">Leadership</h2>
+                    <h3 class="text-6xl font-black text-blue-900 uppercase leading-none tracking-tighter">The Brain Behind AVG</h3>
+                </div>
+                <div class="flex flex-col lg:flex-row items-center gap-20">
+                    <div class="w-full lg:w-5/12">
+                        <div class="leadership-card group">
+                            <div class="aspect-[4/5] overflow-hidden relative">
+                                <!-- Sujit Sir Profile Link -->
+                                <img src="https://lh3.googleusercontent.com/d/1w9Oyjz5Agfno7wN1_HAn9lMZgwDygnXr" alt="Mr. Sujit Shankar" class="leadership-img w-full h-full object-cover">
+                            </div>
+                            <div class="p-10 text-center bg-white">
+                                <h4 class="text-2xl font-black text-blue-900 uppercase tracking-tighter">Mr. Sujit Shankar</h4>
+                                <p class="text-blue-600 font-black text-[10px] uppercase tracking-widest mt-2">Managing Director & CEO</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-7/12">
+                        <p class="text-slate-600 font-light text-lg mb-8 leading-relaxed">The strategic direction and growth of Ape Vision Group are driven by its core leadership team, with key leadership under Mr. Sujit Shankar (Managing Director & CEO).</p>
+                        <p class="text-slate-600 font-light text-lg mb-10 leading-relaxed">Mr. Shankar is associated with <strong>Ace Premier Enterprises</strong>, <strong>Ape Vision LLP</strong>, and <strong>Ape Vision Techinfra Pvt. Ltd.</strong>, and plays a vital role in guiding the group's long-term vision in the energy and infrastructure domain.</p>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="px-5 py-3 bg-white border border-slate-200 rounded-2xl text-[9px] font-black uppercase tracking-widest text-blue-900 shadow-sm">Ace Premier Enterprises</span>
+                            <span class="px-5 py-3 bg-white border border-slate-200 rounded-2xl text-[9px] font-black uppercase tracking-widest text-blue-900 shadow-sm">Ape Vision LLP</span>
+                            <span class="px-5 py-3 bg-white border border-slate-200 rounded-2xl text-[9px] font-black uppercase tracking-widest text-blue-900 shadow-sm">Ape Vision Techinfra Pvt. Ltd.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICES HUB (Restored Page 5 & 7 Content) -->
+        <section id="view-services" class="avg-view py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="relative h-[400px] rounded-[3.5rem] overflow-hidden mb-24 shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80&w=2000" class="w-full h-full object-cover" alt="Energy Projects">
+                    <div class="absolute inset-0 bg-blue-900/60 flex items-center justify-center">
+                        <div class="text-center text-white max-w-4xl px-8">
+                            <h2 class="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-6">End-to-End Project Support</h2>
+                            <p class="text-xl font-light opacity-90 leading-relaxed">AVG delivers structured consulting, engineering, and execution services across renewable energy, energy storage, industrial utilities, and mission-critical infrastructure projects.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div onclick="switchView('s-feasibility')" class="bg-slate-50 p-10 rounded-[3rem] card-interaction cursor-pointer group">
+                        <h4 class="text-xl font-black text-blue-900 uppercase mb-4">Feasibility Study Report</h4>
+                        <p class="text-slate-500 text-sm mb-6">Early-stage technical and commercial viability assessment.</p>
+                        <span class="text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform inline-block">Learn More <i class="fas fa-arrow-right ml-2"></i></span>
+                    </div>
+                    <div onclick="switchView('s-dpr')" class="bg-slate-50 p-10 rounded-[3rem] card-interaction cursor-pointer group">
+                        <h4 class="text-xl font-black text-blue-900 uppercase mb-4">Detailed Project Report (DPR)</h4>
+                        <p class="text-slate-500 text-sm mb-6">Structured documentation for approvals, investors, and execution readiness.</p>
+                        <span class="text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform inline-block">Learn More <i class="fas fa-arrow-right ml-2"></i></span>
+                    </div>
+                    <div onclick="switchView('s-financial')" class="bg-slate-50 p-10 rounded-[3rem] card-interaction cursor-pointer group">
+                        <h4 class="text-xl font-black text-blue-900 uppercase mb-4">Financial Modelling</h4>
+                        <p class="text-slate-500 text-sm mb-6">Bankable project models for funding, investment, and risk evaluation.</p>
+                        <span class="text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform inline-block">Learn More <i class="fas fa-arrow-right ml-2"></i></span>
+                    </div>
+                    <div onclick="switchView('s-tender')" class="bg-slate-50 p-10 rounded-[3rem] card-interaction cursor-pointer group">
+                        <h4 class="text-xl font-black text-blue-900 uppercase mb-4">Tender & Bidding Support</h4>
+                        <p class="text-slate-500 text-sm mb-6">Technical and commercial bid preparation with compliance assurance.</p>
+                        <span class="text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform inline-block">Learn More <i class="fas fa-arrow-right ml-2"></i></span>
+                    </div>
+                    <div onclick="switchView('s-engineering')" class="bg-slate-50 p-10 rounded-[3rem] card-interaction cursor-pointer group">
+                        <h4 class="text-xl font-black text-blue-900 uppercase mb-4">Basic & Detailed Engineering</h4>
+                        <p class="text-slate-500 text-sm mb-6">Engineering deliverables for procurement and construction execution.</p>
+                        <span class="text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform inline-block">Learn More <i class="fas fa-arrow-right ml-2"></i></span>
+                    </div>
+                    <div onclick="switchView('s-pmc')" class="bg-slate-50 p-10 rounded-[3rem] card-interaction cursor-pointer group">
+                        <h4 class="text-xl font-black text-blue-900 uppercase mb-4">Project Management Consultancy</h4>
+                        <p class="text-slate-500 text-sm mb-6">Complete governance of time, cost, quality, and contractor coordination.</p>
+                        <span class="text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform inline-block">Learn More <i class="fas fa-arrow-right ml-2"></i></span>
+                    </div>
+                    <div onclick="switchView('s-integration')" class="bg-slate-50 p-10 rounded-[3rem] card-interaction cursor-pointer group">
+                        <h4 class="text-xl font-black text-blue-900 uppercase mb-4">Project Development & Integration</h4>
+                        <p class="text-slate-500 text-sm mb-6">End-to-end project structuring and execution integration support.</p>
+                        <span class="text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform inline-block">Learn More <i class="fas fa-arrow-right ml-2"></i></span>
+                    </div>
+                    <div onclick="switchView('s-construction')" class="bg-slate-50 p-10 rounded-[3rem] card-interaction cursor-pointer group">
+                        <h4 class="text-xl font-black text-blue-900 uppercase mb-4">Construction Management</h4>
+                        <p class="text-slate-500 text-sm mb-6">On-site supervision, QA/QC monitoring, and progress control.</p>
+                        <span class="text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform inline-block">Learn More <i class="fas fa-arrow-right ml-2"></i></span>
+                    </div>
+                    <div onclick="switchView('s-turnkey')" class="bg-slate-50 p-10 rounded-[3rem] card-interaction cursor-pointer group">
+                        <h4 class="text-xl font-black text-blue-900 uppercase mb-4">Turnkey Project Execution</h4>
+                        <p class="text-slate-500 text-sm mb-6">Single-point responsibility from design to commissioning.</p>
+                        <span class="text-blue-600 text-[10px] font-black uppercase tracking-widest group-hover:translate-x-2 transition-transform inline-block">Learn More <i class="fas fa-arrow-right ml-2"></i></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- RESTORED SERVICE MICRO-PAGES (S1 - S9 FULL CONTENT) -->
+        <section id="view-s-feasibility" class="avg-view"><div class="micro-hero"><div class="absolute inset-0 micro-hero-overlay"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Feasibility Study Report</h2><p class="text-xl text-blue-300 italic">Early-Stage Project Evaluation</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid md:grid-cols-2 gap-12"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Scope of Assessment</h4><ul class="space-y-3 text-slate-600 font-medium"><li class="list-bullet">Site suitability and infrastructure readiness</li><li class="list-bullet">Technology selection and configuration</li><li class="list-bullet">Preliminary capacity sizing</li><li class="list-bullet">Grid connectivity / evacuation assessment</li><li class="list-bullet">Preliminary CAPEX and OPEX estimation</li></ul></div><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Key Deliverables</h4><ul class="text-slate-600 text-sm space-y-4"><li>• Feasibility Study Report (FSR)</li><li>• Concept layouts and system sizing</li><li>• Preliminary BOQ and cost estimate</li><li>• Implementation roadmap and timeline</li></ul></div></div></div></section>
+        
+        <section id="view-s-dpr" class="avg-view"><div class="micro-hero"><div class="absolute inset-0 micro-hero-overlay"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Detailed Project Report (DPR)</h2><p class="text-xl text-blue-300 italic">Documentation Built for Approvals & Funding</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid md:grid-cols-2 gap-12"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">DPR Coverage</h4><ul class="space-y-3 text-slate-600 font-medium"><li class="list-bullet">Project overview and objectives</li><li class="list-bullet">Technical configuration and design basis</li><li class="list-bullet">Site assessment and infrastructure planning</li><li class="list-bullet">CAPEX/OPEX estimation and budgeting</li><li class="list-bullet">Risk analysis and mitigation strategy</li></ul></div><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Deliverables</h4><ul class="text-slate-600 text-sm space-y-4"><li>• Complete DPR document (PDF + editable)</li><li>• Design basis report and technical assumptions</li><li>• Project schedule and execution methodology</li></ul></div></div></div></section>
+
+        <section id="view-s-financial" class="avg-view"><div class="micro-hero"><div class="absolute inset-0 micro-hero-overlay"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Financial Modelling</h2><p class="text-xl text-blue-300 italic">Bankable Models for ROI & Risk Visibility</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid md:grid-cols-2 gap-12"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Capabilities</h4><ul class="space-y-2 text-slate-600 font-medium"><li class="list-bullet">CAPEX and OPEX build-up with assumptions</li><li class="list-bullet">Revenue modelling (tariff / PPA)</li><li class="list-bullet">IRR, NPV, DSCR, payback analysis</li><li class="list-bullet">Sensitivity analysis and scenario planning</li></ul></div><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Deliverables</h4><p class="text-slate-600 text-sm leading-loose">• Excel financial model (editable)<br>• Investor summary dashboard<br>• Financial assumptions pack</p></div></div></div></section>
+
+        <section id="view-s-tender" class="avg-view"><div class="micro-hero"><div class="absolute inset-0 micro-hero-overlay"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Tender & Bidding Support</h2><p class="text-xl text-blue-300 italic">Assistance for Compliant Submissions</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Scope of Support</h4><ul class="space-y-3 text-slate-600 font-medium"><li class="list-bullet">Tender document review and scope interpretation</li><li class="list-bullet">BOQ verification and gap analysis</li><li class="list-bullet">Technical compliance matrix preparation</li><li class="list-bullet">Vendor/OEM coordination support</li><li class="list-bullet">Bid submission document support</li></ul></div></div></section>
+
+        <section id="view-s-engineering" class="avg-view"><div class="micro-hero"><div class="absolute inset-0 micro-hero-overlay"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Basic & Detailed Engineering</h2><p class="text-xl text-blue-300 italic">Engineering Deliverables Built for Execution</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Engineering Coverage</h4><ul class="space-y-3 text-slate-600 font-medium"><li class="list-bullet">Civil, structural, mechanical, electrical, and instrumentation support</li><li class="list-bullet">Detailed engineering drawings and specifications</li><li class="list-bullet">SLDs, layouts, and equipment schedules</li><li class="list-bullet">Issued for Construction (IFC) drawing support</li></ul></div></div></section>
+
+        <section id="view-s-pmc" class="avg-view"><div class="micro-hero"><div class="absolute inset-0 micro-hero-overlay"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Project Management Consultancy</h2><p class="text-xl text-blue-300 italic">Governance for Time, Cost, Quality & Safety</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">PMC Scope</h4><ul class="space-y-3 text-slate-600 font-medium"><li class="list-bullet">Project planning and milestone scheduling</li><li class="list-bullet">EPC and contractor coordination</li><li class="list-bullet">QA/QC implementation and inspections</li><li class="list-bullet">Progress reporting and risk tracking</li><li class="list-bullet">Commissioning coordination and handover support</li></ul></div></div></section>
+
+        <section id="view-s-integration" class="avg-view"><div class="micro-hero"><div class="absolute inset-0 micro-hero-overlay"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Project Development & Integration</h2><p class="text-xl text-blue-300 italic">Acting as Developer for End-to-End Project Structuring</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Scope of Support</h4><ul class="space-y-3 text-slate-600 font-medium"><li class="list-bullet">Feasibility and project structuring</li><li class="list-bullet">Technology selection and configuration</li><li class="list-bullet">Tendering strategy and bid evaluation support</li><li class="list-bullet">Execution planning and schedule integration</li></ul></div></div></section>
+
+        <section id="view-s-construction" class="avg-view"><div class="micro-hero"><div class="absolute inset-0 micro-hero-overlay"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Construction Management</h2><p class="text-xl text-blue-300 italic">On-Site Execution Control for Quality & Safety</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Construction Scope</h4><ul class="space-y-3 text-slate-600 font-medium"><li class="list-bullet">Contractor supervision and daily coordination</li><li class="list-bullet">Civil, structural, mechanical, and electrical monitoring</li><li class="list-bullet">HSE enforcement and safety reporting</li><li class="list-bullet">Interface management across multiple packages</li></ul></div></div></section>
+
+        <section id="view-s-turnkey" class="avg-view"><div class="micro-hero"><div class="absolute inset-0 micro-hero-overlay"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Turnkey Project Execution</h2><p class="text-xl text-blue-300 italic">Single-Point Responsibility from Design to Commissioning</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid md:grid-cols-2 gap-12"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Turnkey Scope</h4><ul class="space-y-2 text-slate-600 font-medium"><li>• Engineering finalization and coordination</li><li>• Procurement and vendor management</li><li>• Civil, structural and MEP execution</li><li>• Testing, commissioning and validation</li><li>• As-built documentation and handover</li></ul></div><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Deliverables</h4><p class="text-slate-600 text-sm leading-loose">• End-to-end project execution plan<br>• Complete installation and commissioning support<br>• Handover package (as-builts, manuals, test reports)</p></div></div></div></section>
+
+        <!-- INDUSTRIES HUB (Restored Page 15 & 27 Content) -->
+        <section id="view-industries" class="avg-view py-24 bg-white">
+            <div class="container mx-auto px-6 text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-black text-blue-900 uppercase tracking-tighter">Industries We Serve</h2>
+                <p class="text-slate-500 text-xl font-light mt-6 max-w-4xl mx-auto">AVG delivers engineering, project management, and execution support across high-complexity energy and infrastructure sectors.</p>
+            </div>
+            <div class="container mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Custom Images Mapped -->
+                <div onclick="switchView('i-thermal')" class="industry-card group"><img src="https://lh3.googleusercontent.com/d/1SY8ASGkJMyRMJOJc-8kIDDDI7zuWfdQN" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="Thermal"><div class="absolute inset-0 industry-card-overlay flex flex-col justify-end p-10 text-white"><h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Conventional Thermal <br>Power Plants (BOP)</h4></div></div>
+                <div onclick="switchView('i-renewable')" class="industry-card group"><img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="Renewable"><div class="absolute inset-0 industry-card-overlay flex flex-col justify-end p-10 text-white"><h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Renewable Energy <br>& BESS</h4></div></div>
+                <div onclick="switchView('i-hydrogen')" class="industry-card group"><img src="https://lh3.googleusercontent.com/d/1OkWMfqN-diAIw_oxWgE7KUPwTvCAbnr_" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="Hydrogen"><div class="absolute inset-0 industry-card-overlay flex flex-col justify-end p-10 text-white"><h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Green Hydrogen</h4></div></div>
+                <div onclick="switchView('i-data')" class="industry-card group"><img src="https://lh3.googleusercontent.com/d/1x-K58unRnlQ0jYerdBAUpItTBiV-35Pr" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="Data Centres"><div class="absolute inset-0 industry-card-overlay flex flex-col justify-end p-10 text-white"><h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Data Centres</h4></div></div>
+                <div onclick="switchView('i-smr')" class="industry-card group"><img src="https://lh3.googleusercontent.com/d/1ssdw88QnuK5CwbTllSmjxf3kR-6XJCDK" class="w-full h-full object-cover transition duration-700 group-hover:scale-110" alt="SMR"><div class="absolute inset-0 industry-card-overlay flex flex-col justify-end p-10 text-white"><h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Small Modular <br>Reactors (SMR)</h4></div></div>
+                <div onclick="switchView('i-ai')" class="industry-card group"><img src="https://lh3.googleusercontent.com/d/1oEcz-saC0Qq_tS6vkWj3eGinYetrNq_0" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="AI Chip"><div class="absolute inset-0 industry-card-overlay flex flex-col justify-end p-10 text-white"><h4 class="text-2xl font-black uppercase tracking-tighter mb-2">AI Chip <br>Manufacturing</h4></div></div>
+                <div onclick="switchView('i-ccus')" class="industry-card group"><img src="https://lh3.googleusercontent.com/d/1ac6Z6NtXwUPGoclC-ywtCY9FGDHGVD55" class="w-full h-full object-cover transition duration-500 group-hover:scale-110" alt="CCUS"><div class="absolute inset-0 industry-card-overlay flex flex-col justify-end p-10 text-white"><h4 class="text-2xl font-black uppercase tracking-tighter mb-2">Carbon Capture <br>(CCUS)</h4></div></div>
+            </div>
+        </section>
+
+        <!-- RESTORED INDUSTRY MICRO-PAGES (I1 - I7 FULL CONTENT) -->
+        <section id="view-i-thermal" class="avg-view"><div class="micro-hero"><img src="https://lh3.googleusercontent.com/d/1SY8ASGkJMyRMJOJc-8kIDDDI7zuWfdQN" class="absolute inset-0 w-full h-full object-cover opacity-30" alt="Thermal Hero"><div class="absolute inset-0 micro-hero-overlay opacity-80"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Thermal Power Plants (BOP)</h2><p class="text-xl text-blue-300">Engineering & Execution Support for Balance of Plant</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="mb-12"><span class="detail-section-title">Serving</span><p class="text-blue-900 font-black uppercase tracking-widest text-sm">Utility Power Projects | Captive Power Plants | Industrial Steam & Power Systems</p></div><div class="grid md:grid-cols-2 gap-12"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Core Offerings</h4><ul class="space-y-3 text-slate-600 font-medium"><li>• Civil, Structural & Plant Infrastructure Works</li><li>• Mechanical Systems Installation & Coordination</li><li>• Electrical Systems & Power Distribution</li><li>• Testing, Commissioning & Handover Support</li></ul></div><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Capabilities</h4><ul class="space-y-2 text-slate-600 text-sm"><li>• Ash and Fuel handling systems coordination</li><li>• Water treatment and DM plant integration</li><li>• Flue gas ducting interface support</li><li>• HVAC systems and building services</li></ul></div></div></div></section>
+        
+        <section id="view-i-renewable" class="avg-view"><div class="micro-hero"><img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&q=80&w=2000" class="absolute inset-0 w-full h-full object-cover opacity-30" alt="Renewable Hero"><div class="absolute inset-0 micro-hero-overlay opacity-80"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Renewable Energy & BESS</h2><p class="text-xl text-blue-300">Solar, Hybrid, and Battery Storage Solutions</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid md:grid-cols-2 gap-12"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">What We Do</h4><ul class="space-y-3 text-slate-600 font-medium"><li>• Solar EPC & Balance of System (BOS) Execution</li><li>• Battery Energy Storage Systems (BESS) Integration</li><li>• Hybrid Solar + Storage Coordination</li><li>• Substations & Grid Connectivity Support</li></ul></div><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Applications</h4><p class="text-slate-600 text-sm leading-relaxed">Peak Shaving | Energy Arbitrage | Renewable Firming | Backup Power | Grid Stabilisation</p></div></div></div></section>
+
+        <section id="view-i-hydrogen" class="avg-view"><div class="micro-hero"><img src="https://lh3.googleusercontent.com/d/1OkWMfqN-diAIw_oxWgE7KUPwTvCAbnr_" class="absolute inset-0 w-full h-full object-cover opacity-30" alt="Hydrogen Hero"><div class="absolute inset-0 micro-hero-overlay opacity-80"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Green Hydrogen Support</h2><p class="text-xl text-blue-300">Electrolyzer Integration & Dispatch Readiness</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid md:grid-cols-2 gap-12"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Core Offerings</h4><ul class="space-y-3 text-slate-600 font-medium"><li>• Green Hydrogen Plant EPC Support</li><li>• Electrolyzer Integration & Balance of Plant (BOP)</li><li>• Water Treatment & Process Utilities Coordination</li><li>• Hydrogen Compression, Storage & Dispatch</li></ul></div><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Sectors Focus</h4><p class="text-slate-600 text-sm">Industrial Decarbonisation | Green Ammonia | Hydrogen Mobility | Export Infrastructure</p></div></div></div></section>
+
+        <section id="view-i-data" class="avg-view"><div class="micro-hero"><img src="https://lh3.googleusercontent.com/d/1x-K58unRnlQ0jYerdBAUpItTBiV-35Pr" class="absolute inset-0 w-full h-full object-cover opacity-30" alt="Data Centre Hero"><div class="absolute inset-0 micro-hero-overlay opacity-80"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Data Centre Infrastructure</h2><p class="text-xl text-blue-300">Project Management & Execution for Hyperscale Facilities</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid md:grid-cols-2 gap-12"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">What We Do</h4><ul class="space-y-3 text-slate-600 font-medium"><li>• MEP Coordination & Monitoring</li><li>• Electrical Infrastructure Delivery (UPS, Transformers)</li><li>• HVAC & Cooling Systems Coordination</li><li>• Integrated Systems Testing (IST) Support</li></ul></div><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Specializations</h4><p class="text-slate-600 text-sm leading-relaxed">Mission-critical uptime and redundancy coordination (N/N+1/2N). Focus on speed-to-market for phased handovers.</p></div></div></div></section>
+
+        <section id="view-i-smr" class="avg-view"><div class="micro-hero"><img src="https://lh3.googleusercontent.com/d/1ssdw88QnuK5CwbTllSmjxf3kR-6XJCDK" class="absolute inset-0 w-full h-full object-cover opacity-30" alt="SMR Hero"><div class="absolute inset-0 micro-hero-overlay opacity-80"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Small Modular Reactor (SMR)</h2><p class="text-xl text-blue-300">Nuclear Project Delivery & Compliance Support</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid-detail-card mb-8"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Core Offerings</h4><ul class="grid md:grid-cols-2 gap-4 text-slate-600 font-medium"><li>• Nuclear Civil & Structural Works Management</li><li>• Balance of Plant (BOP) Execution Support</li><li>• MEP Systems Coordination</li><li>• QA/QC & Documentation Control (Nuclear Standard)</li></ul></div><div class="bg-blue-900 p-10 rounded-[3rem] text-white"><h4 class="text-xl font-black uppercase mb-4 text-blue-400">Quality Assurance</h4><p class="text-sm opacity-80 leading-relaxed">Documentation control and traceability aligned with safety-critical nuclear project standards.</p></div></div></section>
+
+        <section id="view-i-ai" class="avg-view"><div class="micro-hero"><img src="https://lh3.googleusercontent.com/d/1oEcz-saC0Qq_tS6vkWj3eGinYetrNq_0" class="absolute inset-0 w-full h-full object-cover opacity-30" alt="AI Chip Hero"><div class="absolute inset-0 micro-hero-overlay opacity-80"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">AI Chip Manufacturing</h2><p class="text-xl text-blue-300">Precision Infrastructure for Semiconductor Fabs</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid md:grid-cols-2 gap-12"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Fab Infrastructure</h4><ul class="space-y-3 text-slate-600 font-medium"><li>• Cleanroom Construction (ISO Class Environments)</li><li>• Ultra Pure Water (UPW) Plant Coordination</li><li>• High-Purity Gas Systems (N2, Ar, specialty)</li><li>• Tool move-in & Phased handover support</li></ul></div><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Focus</h4><p class="text-slate-600 text-sm">Contamination control | Precise temp & humidity management | Schedule-driven fab execution.</p></div></div></div></section>
+
+        <section id="view-i-ccus" class="avg-view"><div class="micro-hero"><img src="https://lh3.googleusercontent.com/d/1ac6Z6NtXwUPGoclC-ywtCY9FGDHGVD55" class="absolute inset-0 w-full h-full object-cover opacity-30" alt="CCUS Hero"><div class="absolute inset-0 micro-hero-overlay opacity-80"></div><div class="relative z-10 container mx-auto px-6 text-center text-white"><h2 class="text-5xl font-black uppercase mb-4">Carbon Capture (CCUS)</h2><p class="text-xl text-blue-300">Integration Support for Industrial Decarbonisation</p></div></div><div class="container mx-auto px-6 py-20 max-w-6xl"><div class="grid-detail-card"><h4 class="text-xl font-black text-blue-900 uppercase mb-8 border-l-8 border-blue-600 pl-6">Integration Scope</h4><ul class="grid md:grid-cols-2 gap-4 text-slate-600 font-medium"><li>• Solvent / sorbent capture system support</li><li>• Heat integration and cooling water balance</li><li>• CO2 compression & dehydration interface</li><li>• Pipeline tie-ins and storage interface management</li></ul></div></div></section>
+
+        <!-- ASSOCIATES & CLIENTELE (Page 42 - Fully Restored) -->
+        <section id="view-associates" class="avg-view py-24 bg-white">
+            <div class="container mx-auto px-6 max-w-6xl">
+                <div class="text-center mb-20">
+                    <h2 class="text-[10px] font-black text-blue-600 uppercase tracking-[0.5em] mb-4">Our Network</h2>
+                    <h3 class="text-6xl font-black text-blue-900 uppercase leading-none tracking-tighter">Associates & Clientele</h3>
+                    <p class="text-slate-500 text-xl font-light mt-6">Trusted Partnerships. Proven Delivery.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 mb-20">
+                    <div class="grid-detail-card">
+                        <h4 class="text-2xl font-black uppercase text-blue-900 mb-10 leading-none">Partner Ecosystem</h4>
+                        <div class="space-y-8">
+                            <div>
+                                <h5 class="text-blue-600 font-black uppercase text-[10px] tracking-widest mb-3">Detail Engineering Associates</h5>
+                                <p class="text-sm text-slate-600 leading-relaxed mb-4">We collaborate with experienced detail engineering firms supporting multi-discipline design (Civil, Mech, Electrical, C&I) for large-scale infrastructure projects.</p>
+                            </div>
+                            <div>
+                                <h5 class="text-blue-600 font-black uppercase text-[10px] tracking-widest mb-3">Technology & OEM Associates</h5>
+                                <p class="text-sm text-slate-600">Equipment integration for BESS, UPS, Transformers, SCADA, and HVAC systems.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-blue-900 text-white p-12 rounded-[3.5rem] shadow-2xl flex flex-col justify-center">
+                        <h4 class="text-2xl font-black uppercase mb-10 text-blue-400 leading-none">Our Clientele</h4>
+                        <div class="grid gap-3 text-[10px] font-black uppercase tracking-widest text-blue-100 opacity-60">
+                            <div class="border-b border-white/10 pb-2 flex justify-between"><span>Renewable energy developers & IPPs</span><i class="fas fa-check"></i></div>
+                            <div class="border-b border-white/10 pb-2 flex justify-between"><span>Power generation companies</span><i class="fas fa-check"></i></div>
+                            <div class="border-b border-white/10 pb-2 flex justify-between"><span>Industrial utility operators</span><i class="fas fa-check"></i></div>
+                            <div class="border-b border-white/10 pb-2 flex justify-between"><span>Data centre operators</span><i class="fas fa-check"></i></div>
+                            <div class="border-b border-white/10 pb-2 flex justify-between"><span>Oil & gas, petrochemical firms</span><i class="fas fa-check"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-slate-100 p-12 rounded-[4rem] text-center">
+                    <h4 class="text-2xl font-black uppercase text-blue-900 mb-10 text-center">Representative Project Exposure</h4>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <span class="bg-white px-6 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest border border-slate-200 shadow-sm">Combined Cycle Power Plants (CCPP)</span>
+                        <span class="bg-white px-6 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest border border-slate-200 shadow-sm">FGD and emission control systems</span>
+                        <span class="bg-white px-6 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest border border-slate-200 shadow-sm">Large-scale thermal power plant infrastructure</span>
+                        <span class="bg-white px-6 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest border border-slate-200 shadow-sm">Housing and township development projects</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT US VIEW -->
+        <section id="view-contact" class="avg-view py-24 bg-white">
+            <div class="container mx-auto px-6 max-w-6xl text-center">
+                <h2 class="text-6xl font-black text-slate-900 uppercase mb-4 tracking-tighter">Partner With Us</h2>
+                <h3 class="text-2xl font-light text-blue-600 mb-12">on Your Next Project</h3>
+                <div class="bg-slate-50 p-12 rounded-[4rem] max-w-2xl mx-auto shadow-sm border border-slate-100">
+                    <form class="space-y-5">
+                        <input type="text" placeholder="Full Name" class="w-full bg-white px-8 py-5 rounded-2xl outline-none border-0 text-sm">
+                        <input type="email" placeholder="Email Address" class="w-full bg-white px-8 py-5 rounded-2xl outline-none border-0 text-sm">
+                        <textarea placeholder="Your requirements..." rows="4" class="w-full bg-white px-8 py-5 rounded-2xl outline-none border-0 text-sm"></textarea>
+                        <button type="button" class="btn-primary w-full shadow-lg">Send Proposal Request</button>
+                    </form>
+                </div>
+                <div class="mt-12 text-blue-900 font-black uppercase text-xs">contact@apevisiongroup.com</div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER (Header corrected to CORPORATE) -->
+    <footer class="bg-slate-900 text-white pt-24 pb-12 border-t border-white/5">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col lg:flex-row justify-between items-start mb-16 gap-12 text-center lg:text-left">
+                <div class="max-w-sm">
+                    <span class="text-3xl font-black tracking-tighter text-white uppercase leading-none">APE VISION GROUP</span>
+                    <p class="text-blue-400 text-[10px] font-bold uppercase tracking-[0.4em] mt-3">Visionary Realities</p>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-12 text-[9px] font-black uppercase tracking-widest text-slate-400">
+                    <div class="flex flex-col space-y-4">
+                        <span class="text-white border-b border-white/10 pb-2 uppercase">Quick Links</span>
+                        <span onclick="switchView('home')" class="cursor-pointer hover:text-blue-400 transition">Home</span>
+                        <span onclick="switchView('about')" class="cursor-pointer hover:text-blue-400 transition">About Us</span>
+                        <span onclick="switchView('contact')" class="cursor-pointer hover:text-blue-400 transition">Contact</span>
+                    </div>
+                    <div class="flex flex-col space-y-4">
+                        <span class="text-white border-b border-white/10 pb-2 uppercase">Corporate</span>
+                        <span onclick="switchView('brain')" class="cursor-pointer hover:text-blue-400 transition">Leadership</span>
+                        <span onclick="switchView('associates')" class="cursor-pointer hover:text-blue-400 transition">Partners</span>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-white/5 pt-12 text-slate-600 text-[9px] font-black uppercase tracking-[0.5em] text-center">
+                &copy; 2026 APE VISION GROUP. ALL RIGHTS RESERVED.
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<script>
+    function switchView(viewId) {
+        const views = document.querySelectorAll('.avg-view');
+        const navItems = document.querySelectorAll('.nav-item');
+        views.forEach(v => v.classList.remove('active'));
+        navItems.forEach(n => {
+            n.classList.remove('active-nav');
+            if (n.id === 'nav-' + viewId) n.classList.add('active-nav');
+        });
+        const activeView = document.getElementById('view-' + viewId);
+        if (activeView) {
+            activeView.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        document.getElementById('mobile-menu').classList.add('hidden');
+    }
+    function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
+</script>
+</body>
+</html>
